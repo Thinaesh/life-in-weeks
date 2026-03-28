@@ -173,6 +173,17 @@
         renderSettings();
     }
 
+    // ---- MOBILE NAV HELPER ----
+    function closeMobileNav() {
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const headerNav = document.getElementById('header-nav');
+        const mobileOverlay = document.getElementById('mobile-nav-overlay');
+        if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+        if (headerNav) headerNav.classList.remove('open');
+        if (mobileOverlay) mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
     // ---- EVENT LISTENERS ----
     function setupEventListeners() {
         // Onboarding form
@@ -195,8 +206,33 @@
                 document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
                 document.getElementById(`section-${section}`).classList.remove('hidden');
                 document.getElementById(`section-${section}`).classList.add('active');
+                // Close mobile menu on nav selection
+                closeMobileNav();
             });
         });
+
+        // Hamburger mobile menu toggle
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const headerNav = document.getElementById('header-nav');
+        const mobileOverlay = document.getElementById('mobile-nav-overlay');
+
+        if (hamburgerBtn && headerNav && mobileOverlay) {
+            hamburgerBtn.addEventListener('click', () => {
+                const isOpen = headerNav.classList.contains('open');
+                if (isOpen) {
+                    closeMobileNav();
+                } else {
+                    hamburgerBtn.classList.add('active');
+                    headerNav.classList.add('open');
+                    mobileOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            mobileOverlay.addEventListener('click', () => {
+                closeMobileNav();
+            });
+        }
 
         // View toggle
         document.querySelectorAll('.view-btn').forEach(btn => {

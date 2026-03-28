@@ -40,7 +40,12 @@
             <div class="header-left">
                 <h1 class="logo">Life<span class="accent">.</span>Weeks</h1>
             </div>
-            <nav class="header-nav">
+            <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <nav class="header-nav" id="header-nav">
                 <button class="nav-btn active" data-section="grid" id="nav-grid">
                     <span class="nav-icon">▦</span> Grid
                 </button>
@@ -60,6 +65,7 @@
                     <span class="nav-icon">⚙</span> Settings
                 </button>
             </nav>
+            <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
             <div class="header-right">
                 <div class="view-toggle" id="view-toggle">
                     <button class="view-btn active" data-view="weeks" title="Weeks View">W</button>
