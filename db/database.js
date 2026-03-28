@@ -1,67 +1,61 @@
-const Database = require('better-sqlite3');
-const path = require('path');
+const { Pool } = require('pg');
 const fs = require('fs');
+const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'life-in-weeks.db');
 const SCHEMA_PATH = path.join(__dirname, 'schema.sql');
 
-let db;
+// Setup Postgres connection pool.
+// In production, we assume DATABASE_URL is provided by Shiper.
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/lifeinweeks',
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 function getDb() {
-    if (!db) {
-        db = new Database(DB_PATH);
-        db.pragma('journal_mode = WAL');
-        db.pragma('foreign_keys = ON');
-        // Run schema
-        const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
-        db.exec(schema);
-        // Migrate: ensure users table and profile.user_id column exist
-        migrate(db);
-    }
-    return db;
+    return pool;
 }
 
-function migrate(db) {
-    // Check if user_id column exists on profile
-    const cols = db.prepare("PRAGMA table_info(profile)").all();
-    const hasUserId = cols.some(c => c.name === 'user_id');
-    if (!hasUserId) {
-        db.exec('ALTER TABLE profile ADD COLUMN user_id INTEGER REFERENCES users(id)');
+/**
+ * Initializes the database schema.
+ */
+async function initDb() {
+    try {
+        const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
+        await pool.query(schema);
+        console.log('📦 Database schema initialized');
+    } catch (err) {
+        console.error('Error initializing schema:', err);
     }
 }
 
 /**
- * Seed the default user (thinesh / abc123) and assign existing profile data.
- * Called once on first boot after auth is introduced.
+ * Seed the default user (thinesh / abc123).
+ * Called once on first boot.
  */
 async function seedDefaultUser() {
+    await initDb();
+    
     const bcrypt = require('bcrypt');
-    const d = getDb();
 
-    // Only seed if no users exist
-    const userCount = d.prepare('SELECT COUNT(*) as cnt FROM users').get().cnt;
-    if (userCount > 0) return;
+    try {
+        // Only seed if no users exist
+        const { rows } = await pool.query('SELECT COUNT(*) as cnt FROM users');
+        if (parseInt(rows[0].cnt) > 0) return;
 
-    const hash = await bcrypt.hash('abc123', 12);
-    const info = d.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run('thinesh', hash);
-    const userId = info.lastInsertRowid;
+        const hash = await bcrypt.hash('abc123', 12);
+        await pool.query(
+            'INSERT INTO users (username, password) VALUES ($1, $2)', 
+            ['thinesh', hash]
+        );
 
-    // Assign existing profile (id=1) to this user
-    const existingProfile = d.prepare('SELECT id FROM profile WHERE id = 1').get();
-    if (existingProfile) {
-        d.prepare('UPDATE profile SET user_id = ? WHERE id = 1').run(userId);
-        // Update all related tables to use this profile's id
-        // (They already reference profile_id = 1, which now belongs to user_id)
+        console.log('🔐 Default user "thinesh" created (password: abc123)');
+    } catch (err) {
+        console.error('Error seeding default user:', err);
     }
-
-    console.log('🔐 Default user "thinesh" created (password: abc123)');
 }
 
-function closeDb() {
-    if (db) {
-        db.close();
-        db = null;
-    }
+async function closeDb() {
+    await pool.end();
 }
 
 module.exports = { getDb, closeDb, seedDefaultUser };
