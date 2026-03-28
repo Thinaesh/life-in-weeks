@@ -325,6 +325,7 @@
     }
 
     function renderWeeksGrid(container, yearLabels) {
+        container.className = 'week-grid';
         const lifespan = state.profile.lifespan;
         const birth = new Date(state.profile.birth_date);
         const now = new Date();
