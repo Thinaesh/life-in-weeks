@@ -1,0 +1,13 @@
+src/components/grid/HeatmapLegend.tsx(4,9): error TS6198: All destructured elements are unused.
+src/components/grid/WeekCell.tsx(2,1): error TS6133: 'clsx' is declared but its value is never read.
+src/components/grid/WeekCell.tsx(2,22): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+src/components/layout/OnboardingModal.tsx(2,21): error TS2307: Cannot find module '../../../api' or its corresponding type declarations.
+src/components/layout/OnboardingModal.tsx(3,29): error TS2307: Cannot find module '../../../store/useAppStore' or its corresponding type declarations.
+src/views/AuthView.tsx(3,21): error TS2307: Cannot find module '../../api' or its corresponding type declarations.
+src/views/AuthView.tsx(4,30): error TS2307: Cannot find module '../../store/useAuthStore' or its corresponding type declarations.
+src/views/AuthView.tsx(5,29): error TS2307: Cannot find module '../../store/useAppStore' or its corresponding type declarations.
+src/views/ChaptersView.tsx(22,74): error TS6133: 'idx' is declared but its value is never read.
+src/views/SettingsView.tsx(3,1): error TS6133: 'api' is declared but its value is never read.
+src/views/SettingsView.tsx(15,46): error TS6133: 'updateProfile' is declared but its value is never read.
+src/views/StatsView.tsx(5,39): error TS6133: 'milestones' is declared but its value is never read.
+src/views/StatsView.tsx(5,51): error TS6133: 'goals' is declared but its value is never read.
