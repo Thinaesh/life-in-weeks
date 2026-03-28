@@ -29,21 +29,60 @@
     }
 
     const api = {
-        async get(url) { const r = handleAuthError(await fetch(url, { credentials: 'same-origin' })); return r.json(); },
+        async get(url) { 
+            toggleLoading(true);
+            try { const r = handleAuthError(await fetch(url, { credentials: 'same-origin' })); return await r.json(); }
+            finally { toggleLoading(false); }
+        },
         async post(url, data) {
-            const r = handleAuthError(await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: 'same-origin' }));
-            return r.json();
+            toggleLoading(true);
+            try { const r = handleAuthError(await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: 'same-origin' })); return await r.json(); }
+            finally { toggleLoading(false); }
         },
         async put(url, data) {
-            const r = handleAuthError(await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: 'same-origin' }));
-            return r.json();
+            toggleLoading(true);
+            try { const r = handleAuthError(await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: 'same-origin' })); return await r.json(); }
+            finally { toggleLoading(false); }
         },
-        async del(url) { const r = handleAuthError(await fetch(url, { method: 'DELETE', credentials: 'same-origin' })); return r.json(); },
+        async del(url) { 
+            toggleLoading(true);
+            try { const r = handleAuthError(await fetch(url, { method: 'DELETE', credentials: 'same-origin' })); return await r.json(); }
+            finally { toggleLoading(false); }
+        },
         async upload(url, formData) {
-            const r = handleAuthError(await fetch(url, { method: 'POST', body: formData, credentials: 'same-origin' }));
-            return r.json();
+            toggleLoading(true);
+            try { const r = handleAuthError(await fetch(url, { method: 'POST', body: formData, credentials: 'same-origin' })); return await r.json(); }
+            finally { toggleLoading(false); }
         }
     };
+
+    // ---- GLOBAL LOADER ----
+    let activeRequests = 0;
+    let loaderTimeout = null;
+
+    function toggleLoading(isLoading) {
+        let loader = document.getElementById('global-loader');
+        if (!loader) {
+            loader = document.createElement('div');
+            loader.id = 'global-loader';
+            loader.className = 'global-loader';
+            loader.innerHTML = '<div class="spinner"></div><span class="global-loader-text">Syncing...</span>';
+            document.body.appendChild(loader);
+        }
+        
+        activeRequests += isLoading ? 1 : -1;
+        activeRequests = Math.max(0, activeRequests);
+        
+        if (activeRequests > 0) {
+            clearTimeout(loaderTimeout);
+            loader.classList.add('visible');
+        } else {
+            // Slight delay to prevent flickering on fast sequential requests
+            loaderTimeout = setTimeout(() => {
+                if (activeRequests === 0) loader.classList.remove('visible');
+            }, 300);
+        }
+    }
 
     // ---- DATE UTILITIES ----
     function getWeekNumber(date) {
@@ -926,7 +965,10 @@
         // Palette swatches
         panel.querySelectorAll('.palette-swatch').forEach(sw => {
             sw.addEventListener('click', async () => {
-                state.settings.theme = sw.dataset.palette;
+                const newTheme = sw.dataset.palette;
+                if (state.settings.theme === newTheme) return;
+
+                state.settings.theme = newTheme;
                 applyTheme();
                 await api.put('/api/settings', { theme: state.settings.theme });
                 renderSettings();
@@ -936,14 +978,20 @@
 
         // Dark mode toggle
         document.getElementById('dark-mode-toggle').addEventListener('change', async (e) => {
-            state.settings.mode = e.target.checked ? 'dark' : 'light';
+            const newMode = e.target.checked ? 'dark' : 'light';
+            if (state.settings.mode === newMode) return;
+
+            state.settings.mode = newMode;
             applyTheme();
             await api.put('/api/settings', { mode: state.settings.mode });
         });
 
         // Reminder toggle
         document.getElementById('reminder-toggle').addEventListener('change', async (e) => {
-            state.settings.reminder_enabled = e.target.checked ? 'true' : 'false';
+            const newReminder = e.target.checked ? 'true' : 'false';
+            if (state.settings.reminder_enabled === newReminder) return;
+
+            state.settings.reminder_enabled = newReminder;
             await api.put('/api/settings', { reminder_enabled: state.settings.reminder_enabled });
         });
 
