@@ -5,10 +5,9 @@ const path = require('path');
 const SCHEMA_PATH = path.join(__dirname, 'schema.sql');
 
 // Setup Postgres connection pool.
-// In production, we assume DATABASE_URL is provided by Shiper.
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/lifeinweeks',
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : { rejectUnauthorized: false } // Neon requires SSL
 });
 
 function getDb() {

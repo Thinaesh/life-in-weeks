@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS profile (
 -- Life chapters
 CREATE TABLE IF NOT EXISTS chapters (
     id          SERIAL PRIMARY KEY,
-    profile_id  INTEGER DEFAULT 1 REFERENCES profile(id),
+    profile_id  INTEGER REFERENCES profile(id),
     name        TEXT NOT NULL,
     color       TEXT NOT NULL,
     start_date  TEXT NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS chapters (
 -- Weekly journal entries
 CREATE TABLE IF NOT EXISTS journal (
     id          SERIAL PRIMARY KEY,
-    profile_id  INTEGER DEFAULT 1 REFERENCES profile(id),
+    profile_id  INTEGER REFERENCES profile(id),
     year        INTEGER NOT NULL,
     week        INTEGER NOT NULL,
     note        TEXT,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS journal (
 -- Milestones
 CREATE TABLE IF NOT EXISTS milestones (
     id          SERIAL PRIMARY KEY,
-    profile_id  INTEGER DEFAULT 1 REFERENCES profile(id),
+    profile_id  INTEGER REFERENCES profile(id),
     title       TEXT NOT NULL,
     date        TEXT NOT NULL,
     icon        TEXT DEFAULT '♦',
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS milestones (
 -- Goals
 CREATE TABLE IF NOT EXISTS goals (
     id          SERIAL PRIMARY KEY,
-    profile_id  INTEGER DEFAULT 1 REFERENCES profile(id),
+    profile_id  INTEGER REFERENCES profile(id),
     title       TEXT NOT NULL,
     target_date TEXT NOT NULL,
     completed   INTEGER DEFAULT 0,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS goals (
 -- Week snapshots (photos)
 CREATE TABLE IF NOT EXISTS snapshots (
     id          SERIAL PRIMARY KEY,
-    profile_id  INTEGER DEFAULT 1 REFERENCES profile(id),
+    profile_id  INTEGER REFERENCES profile(id),
     year        INTEGER NOT NULL,
     week        INTEGER NOT NULL,
     filename    TEXT NOT NULL,
