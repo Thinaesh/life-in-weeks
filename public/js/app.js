@@ -864,6 +864,7 @@
                         <div class="palette-swatch ${state.settings.theme === 'blue' ? 'active' : ''}" style="background:#0984e3" data-palette="blue" title="Classic Blue"></div>
                         <div class="palette-swatch ${state.settings.theme === 'green' ? 'active' : ''}" style="background:#00b894" data-palette="green" title="Verdant Green"></div>
                         <div class="palette-swatch ${state.settings.theme === 'yellow' ? 'active' : ''}" style="background:#fdcb6e" data-palette="yellow" title="Illuminating"></div>
+                        <div class="palette-swatch ${state.settings.theme === 'frosted' ? 'active' : ''}" style="background:#768A96" data-palette="frosted" title="Frosted"></div>
                     </div>
                 </div>
                 <div class="setting-row">

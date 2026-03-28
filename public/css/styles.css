@@ -81,6 +81,35 @@
     --accent-tertiary: #e17055;
 }
 
+/* Frosted Theme */
+[data-palette="frosted"] {
+    /* Backgrounds using the dark slate colors */
+    --bg-primary: #29353C;
+    --bg-secondary: #303E47;
+    --bg-surface: #374752;
+    --bg-elevated: #44576D;
+    --bg-hover: #526780;
+
+    /* Borders matching the mid-tones */
+    --border: #44576D;
+    --border-light: #768A96;
+
+    /* Accents using the light blues */
+    --accent-primary: #AAC7D8;
+    --accent-primary-rgb: 170, 199, 216;
+    --accent-secondary: #DFEBF6;
+    --accent-tertiary: #E6E6E6;
+
+    /* Text */
+    --text-primary: #E6E6E6;
+    --text-secondary: #DFEBF6;
+    --text-muted: #AAC7D8;
+
+    /* Grid using the slate colors */
+    --grid-empty: #44576D;
+    --grid-filled: #768A96;
+}
+
 /* Light mode override */
 [data-theme="light"] {
     --bg-primary: #f5f5fa;
@@ -508,6 +537,7 @@ textarea { resize: vertical; }
 
 .grid-container {
     display: flex;
+    justify-content: center;
     overflow: auto;
     padding-bottom: 20px;
 }
