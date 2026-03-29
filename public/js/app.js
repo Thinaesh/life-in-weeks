@@ -428,7 +428,8 @@
         for (let y = 0; y < lifespan; y++) {
             const label = document.createElement('div');
             label.className = 'year-label' + (y % 10 === 0 ? ' decade' : '');
-            label.style.height = '19px';
+            label.style.height = '16px';
+            label.style.marginBottom = '3px';
             label.textContent = y;
             labelFrag.appendChild(label);
 
